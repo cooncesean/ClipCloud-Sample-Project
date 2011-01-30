@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+    <h1>{{ request.user.username }} Profile</h1>
+    
+    {% if request.user.get_profile.is_approved %}
+    
+        {# FORM TO POST DATA TO CLIPCLOUD ###}
+        <form url="{% url sample_project.sample_app.views.post_data_to_clipcloud %}" method="POST">
+            {{ form.as_table }}
+            <input type="Submit" />
+        </form>
+        <hr />
+        
+        {# LIST OF RECENT COPIES SENT TO CLIPCLOUD ####}
+        <ul>
+            {% for copy in recent_copies %}
+                <li>{{ copy }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <a href="{% url sample_project.sample_app.views.link_account %}">Link Your Account to ClipCloud</a>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,10 @@
+This is a Sample Project that demonstrates how to hook into the ClipCloud API.
+It is a django web app and acts as an example for interacting with ClipCloud.
+
+The app 'sample_app' tutorial demonstrates how to:
+  > Obtain a RequestToken on behalf of a User.
+  > Provide a callback hook to allow ClipCloud to send a RequestToken back to you.
+  > Process a RequestToken and allow your User to request an AccessToken.
+  > Store Access/Request Tokens for your users.
+  > Send data to ClipCloud.
+  > Request user data from ClipCloud.
