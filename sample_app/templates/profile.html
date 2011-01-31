@@ -4,10 +4,11 @@
 
     <h1>{{ profile.user.username }} Profile</h1>
     {% if profile.is_approved %}
-    
+        You are approved and can send data to ClipCloud.<br /><br />
+        
         {# FORM TO POST DATA TO CLIPCLOUD ###}
         <strong>Send Data to ClipCloud:</strong>
-        <form url="{% url sample_project.sample_app.views.post_data_to_clipcloud %}" method="POST">
+        <form action="{% url sample_project.sample_app.views.post_data_to_clipcloud %}" method="POST">
             {{ form.as_table }}
             <input type="Submit" />
         </form>

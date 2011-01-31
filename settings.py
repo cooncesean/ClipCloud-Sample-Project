@@ -92,13 +92,11 @@ LOGIN_URL = '/signup/'
 #     verification to obtain an AccessToken (1 per user) that allows you
 #     to post and search data on behalf of the user.
 ##############################################
-OAUTH_CONSUMER_KEY = 'Fx7VgJNgpd3N36hE4A'
-OAUTH_CONSUMER_SECRET = 'Uqyq6tWsNLFdAk77KVGATQ5nyhB2rQBL'
-
-OAUTH_LOCAL_CALLBACK_URL = "%s%s" % (BASE_URL, 'link-account/')
-CLIPCLOUD_BASE_URL = 'http://localhost:8000/'
-CLIPCLOUD_REQUEST_TOKEN_URL = "%s%s?oauth_consumer_key=%s&oauth_signature=%s" % (CLIPCLOUD_BASE_URL, 'api/oauth/request_token/', OAUTH_CONSUMER_KEY, OAUTH_CONSUMER_SECRET)
-CLIPCLOUD_AUTHORIZATION_URL = "%s%s" % (CLIPCLOUD_BASE_URL, 'api/oauth/authorize/')
+OAUTH_SERVER = 'http://www.getclipcloud.com/'
+OAUTH_PORT = None # Overridden in settings_local.py for local development
+CONSUMER_KEY = '9cESPxVTxHTRhkvC8t'
+CONSUMER_SECRET = '7dXNXT2Ex4Nu8jkaNGMGzRufVrHxkj6n'
+LOCAL_CALLBACK_URL = "%s%s" % (BASE_URL, 'link-account/')
 
 try:
     from sample_project.settings_local import *

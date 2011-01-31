@@ -1,0 +1,2 @@
+django==1.2.3
+git+git://github.com/leah/python-oauth.git

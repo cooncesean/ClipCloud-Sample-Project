@@ -7,8 +7,9 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic.simple import direct_to_template
 
-from sample_project.sample_app.models import Profile
+from sample_project.sample_app.helpers import OauthWrapper
 from sample_project.sample_app.forms import SignUpForm, LoginForm, VerifierForm, PostForm
+from sample_project.sample_app.models import Profile
 
 def login(request):
     " Process a login request. "
@@ -91,7 +92,7 @@ def profile(request):
             
     # If the user is approved, use their API data to fetch the 5 most recent copy objects
     if request.user.get_profile().is_approved:
-        vars['recent_copies'] = ['4','foo','bar','234242']
+        vars['recent_copies'] = profile.get_recent_copies()
         vars['form'] = PostForm()
         vars['profile'] = request.user.get_profile()
     
@@ -112,8 +113,9 @@ def link_account(request):
     """    
     # If nothing is in the GET, the user is trying request access to link their account
     # Lets make a call to get a RequestToken from ClipCloud
+    CLIPCLOUD_REQUEST_TOKEN_URL = "%s%s?oauth_consumer_key=%s&oauth_signature=%s" % (settings.OAUTH_SERVER, 'api/oauth/request_token/', settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
     if not request.GET:
-        return HttpResponseRedirect("%s&%s" % (settings.CLIPCLOUD_REQUEST_TOKEN_URL, urllib.urlencode({'callback_url':settings.OAUTH_LOCAL_CALLBACK_URL})))
+        return HttpResponseRedirect("%s&%s" % (CLIPCLOUD_REQUEST_TOKEN_URL, urllib.urlencode({'callback_url':settings.LOCAL_CALLBACK_URL})))
     
     # Get the request token out of the GET and add them to the local Profile object
     if 'oauth_token' in request.GET and 'oauth_token_secret' in request.GET:
@@ -123,7 +125,8 @@ def link_account(request):
         profile.save()
     
         # Now that we have a valid RequestToken, make another request to get an AccessToken for the user
-        auth_url = "%s?oauth_token=%s" % (settings.CLIPCLOUD_AUTHORIZATION_URL, profile.key)
+        CLIPCLOUD_AUTHORIZATION_URL = "%s%s" % (settings.OAUTH_SERVER, 'api/oauth/authorize/')
+        auth_url = "%s?oauth_token=%s" % (CLIPCLOUD_AUTHORIZATION_URL, profile.key)
         return HttpResponseRedirect(auth_url)
         
     return HttpResponse('We could not link your account properly.')
@@ -161,8 +164,17 @@ def post_data_to_clipcloud(request):
     # Bind the post data to the form and validate
     form = PostForm(data=request.POST)
     if not form.is_valid():
-        return direct_to_template(request, 'profile.html', {'form':form})
+        vars = {}
+        vars['profile'] = request.user.get_profile()
+        vars['form'] = form
+        vars['recent_copies'] = request.user.get_profile().get_recent_copies()
+        return direct_to_template(request, 'profile.html', vars)
     
-    body = form.cleaned_data['body']
+    # Send the copy data to ClipCloud
+    oauth_wrapper = OauthWrapper(profile=request.user.get_profile())
+    oauth_wrapper.send_copy_to_clipcloud(copy_body=form.cleaned_data['body'])
     
+    # Redirect back to the profile page
     return HttpResponseRedirect(reverse('sample_project.sample_app.views.profile'))
+    
+    

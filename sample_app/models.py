@@ -24,3 +24,6 @@ class Profile(models.Model):
     def __unicode__(self):
         return u"%s: %s" % (self.user.username, self.is_approved and 'approved' or 'un-approved')
         
+    def get_recent_copies(self):
+        " Get a list of X most recent copies for the profile. "
+        return ['4','foo','bar','234242']
