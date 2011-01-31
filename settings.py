@@ -9,7 +9,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'sample_project',                      # Or path to database file if using sqlite3.
+        'NAME': 'sample_project.db',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -92,8 +92,9 @@ LOGIN_URL = '/signup/'
 #     verification to obtain an AccessToken (1 per user) that allows you
 #     to post and search data on behalf of the user.
 ##############################################
-OAUTH_CONSUMER_KEY = 'jYWmkhZZcrkLmrhaQV'
-OAUTH_CONSUMER_SECRET = 'NtM6BDbFRnb6bnTVcyjZcVrwx2yfkMCB'
+OAUTH_CONSUMER_KEY = 'Fx7VgJNgpd3N36hE4A'
+OAUTH_CONSUMER_SECRET = 'Uqyq6tWsNLFdAk77KVGATQ5nyhB2rQBL'
+
 OAUTH_LOCAL_CALLBACK_URL = "%s%s" % (BASE_URL, 'link-account/')
 CLIPCLOUD_BASE_URL = 'http://localhost:8000/'
 CLIPCLOUD_REQUEST_TOKEN_URL = "%s%s?oauth_consumer_key=%s&oauth_signature=%s" % (CLIPCLOUD_BASE_URL, 'api/oauth/request_token/', OAUTH_CONSUMER_KEY, OAUTH_CONSUMER_SECRET)

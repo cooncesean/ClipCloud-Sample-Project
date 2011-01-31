@@ -2,11 +2,11 @@
 
 {% block body %}
 
-    <h1>{{ request.user.username }} Profile</h1>
-    
-    {% if request.user.get_profile.is_approved %}
+    <h1>{{ profile.user.username }} Profile</h1>
+    {% if profile.is_approved %}
     
         {# FORM TO POST DATA TO CLIPCLOUD ###}
+        <strong>Send Data to ClipCloud:</strong>
         <form url="{% url sample_project.sample_app.views.post_data_to_clipcloud %}" method="POST">
             {{ form.as_table }}
             <input type="Submit" />
@@ -14,13 +14,27 @@
         <hr />
         
         {# LIST OF RECENT COPIES SENT TO CLIPCLOUD ####}
-        <ul>
-            {% for copy in recent_copies %}
-                <li>{{ copy }}</li>
-            {% endfor %}
-        </ul>
+        {% if recent_copies %}
+            <strong>Recent Copies</strong>
+            <ul>
+                {% for copy in recent_copies %}
+                    <li>{{ copy }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        
     {% else %}
-        <a href="{% url sample_project.sample_app.views.link_account %}">Link Your Account to ClipCloud</a>
+    
+        <a href="{% url sample_project.sample_app.views.link_account %}">Link Your Account to ClipCloud</a> or
+        <hr />
+        
+        Set your <strong>Verification Code</strong> if you have received it from ClipCloud.
+        
+        <form name="verifier" method="POST" action="{% url sample_project.sample_app.views.set_verifier %}">
+            {{ verification_form.as_table }}
+            <input type="Submit" />
+        </form>
+        
     {% endif %}
 
 {% endblock %}

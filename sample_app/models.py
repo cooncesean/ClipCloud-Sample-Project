@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 KEY_SIZE = 18
 SECRET_SIZE = 32
+VERIFIER_SIZE = 4
 
 class Profile(models.Model):
     """
@@ -17,6 +18,7 @@ class Profile(models.Model):
     user = models.ForeignKey(User, related_name='tokens', unique=True)
     key = models.CharField(max_length=KEY_SIZE, blank=True, null=True)
     secret = models.CharField(max_length=SECRET_SIZE, blank=True, null=True)
+    verifier = models.CharField(max_length=VERIFIER_SIZE, blank=True, null=True)
     is_approved = models.BooleanField(default=False)
     
     def __unicode__(self):
