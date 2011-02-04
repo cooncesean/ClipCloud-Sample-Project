@@ -89,12 +89,13 @@ def profile(request):
           - A form to allow them to post data to their ClipCloud account.
     """
     vars = {}
-            
+    profile = request.user.get_profile()
+    
     # If the user is approved, use their API data to fetch the 5 most recent copy objects
-    if request.user.get_profile().is_approved:
+    if profile.is_approved:
         vars['recent_copies'] = profile.get_recent_copies()
         vars['form'] = PostForm()
-        vars['profile'] = request.user.get_profile()
+        vars['profile'] = profile
     
     vars['verification_form'] = VerifierForm()
     return direct_to_template(request, 'profile.html', vars)

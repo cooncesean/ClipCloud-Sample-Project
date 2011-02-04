@@ -16,9 +16,11 @@ class OauthWrapper(object):
     def _fetch_response(self, oauth_request):
         " Util method to fetch responses. "
         url = oauth_request.to_url()
-        import pdb
-        pdb.set_trace()
-
+        
+        # Some stupid hack b/c of the way httplib doesn't accept ports as a part of the url
+        if 'http://localhost' in url:
+            url = url.replace('http://localhost', 'http://localhost:8000')
+        
         self.connection.request(oauth_request.http_method, url)
         response = self.connection.getresponse()
         s = response.read()
@@ -38,23 +40,23 @@ class OauthWrapper(object):
                 self.callback = settings.BASE_URL
         return Token(self.profile.key, self.profile.secret)
                 
-    def _build_oauth_params(self, url):
-        " Helper func to build a valid oauth signature to make requests on behalf of the user. "
-        parameters = {
-            'oauth_consumer_key': settings.CONSUMER_KEY,
-            'oauth_token': self.profile.key,
-            'oauth_signature_method': 'HMAC-SHA1',
-        }
-                
-        oauth_request = OAuthRequest.from_token_and_callback(
-            self.access_token, 
-            http_url=url, 
-            parameters=parameters
-        )
-        signature_method = OAuthSignatureMethod_HMAC_SHA1()
-        signature = signature_method.build_signature(oauth_request, self.consumer, self.access_token)
-        parameters['oauth_signature'] = signature
-        return parameters
+    # def _build_oauth_params(self, url):
+    #     " Helper func to build a valid oauth signature to make requests on behalf of the user. "
+    #     parameters = {
+    #         'oauth_consumer_key': settings.CONSUMER_KEY,
+    #         'oauth_token': self.profile.key,
+    #         'oauth_signature_method': 'HMAC-SHA1',
+    #     }
+    #             
+    #     oauth_request = OAuthRequest.from_token_and_callback(
+    #         self.access_token, 
+    #         http_url=url, 
+    #         parameters=parameters
+    #     )
+    #     signature_method = OAuthSignatureMethod_HMAC_SHA1()
+    #     signature = signature_method.build_signature(oauth_request, self.consumer, self.access_token)
+    #     parameters['oauth_signature'] = signature
+    #     return parameters
                 
     def _build_oauth_request(self, url, parameters=None):
         " Returns a OAuthRequest object "
