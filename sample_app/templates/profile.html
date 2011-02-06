@@ -8,7 +8,7 @@
         
         {# FORM TO POST DATA TO CLIPCLOUD ###}
         <strong>Send Data to ClipCloud:</strong>
-        <form action="{% url sample_project.sample_app.views.post_data_to_clipcloud %}" method="POST">
+        <form action="{% url sample_project.sample_app.views.clipcloud.post_copy_data %}" method="POST">
             {{ form.as_table }}
             <input type="Submit" />
         </form>
@@ -19,19 +19,19 @@
             <strong>Recent Copies</strong>
             <ul>
                 {% for copy in recent_copies %}
-                    <li>{{ copy }}</li>
+                    <li>{{ copy.copy_body }} - [{{ copy.date_added }}]</li>
                 {% endfor %}
             </ul>
         {% endif %}
         
     {% else %}
     
-        <a href="{% url sample_project.sample_app.views.link_account %}">Link Your Account to ClipCloud</a> or
+        <a href="{% url sample_project.sample_app.views.clipcloud.get_and_authorize_request_token %}">Link Your Account to ClipCloud</a> or
         <hr />
         
         Set your <strong>Verification Code</strong> if you have received it from ClipCloud.
         
-        <form name="verifier" method="POST" action="{% url sample_project.sample_app.views.set_verifier %}">
+        <form name="verifier" method="POST" action="{% url sample_project.sample_app.views.clipcloud.set_verifier %}">
             {{ verification_form.as_table }}
             <input type="Submit" />
         </form>

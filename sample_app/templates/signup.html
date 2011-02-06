@@ -3,10 +3,12 @@
 {% block body %}
     <h1>Sign Up</h1>
     
-    <form method="post" action="{% url sample_project.sample_app.views.signup %}">
+    <form method="post" action="{% url sample_project.sample_app.views.local_auth.signup %}">
         
         {{ form.as_table }}
         
         <input type="Submit" />
     </form>
+    or 
+    <a href="{% url sample_project.sample_app.views.local_auth.login %}">Login &raquo;</a>
 {% endblock %}

@@ -1,5 +1,11 @@
+import simplejson
+import oauth.oauth as oauth
+
 from django.db import models
 from django.contrib.auth.models import User
+
+from sample_project.sample_app.client import GET_USER_COPY_DATA_URL, \
+    signature_method_plaintext, signature_method_hmac_sha1, consumer, sample_client
 
 KEY_SIZE = 18
 SECRET_SIZE = 32
@@ -26,4 +32,21 @@ class Profile(models.Model):
         
     def get_recent_copies(self):
         " Get a list of X most recent copies for the profile. "
-        return ['4','foo','bar','234242']
+        # Only run requests for auth'd users w/ linked appropriate token values
+        if not self.key or not self.secret or not self.verifier or not self.is_approved:
+            return []
+            
+        # Create the OAuthRequest
+        access_token = oauth.OAuthToken(self.key, self.secret)
+        oauth_request = oauth.OAuthRequest.from_consumer_and_token(
+            consumer, 
+            token=access_token, 
+            http_method='GET', 
+            http_url=GET_USER_COPY_DATA_URL
+        )
+        oauth_request.sign_request(signature_method_plaintext, consumer, access_token)
+        response = sample_client.access_resource(oauth_request)
+        
+        # Dump the json response and return the list of copy_data
+        json = simplejson.loads(response)
+        return json['copy_data']
