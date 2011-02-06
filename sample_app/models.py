@@ -48,5 +48,9 @@ class Profile(models.Model):
         response = sample_client.access_resource(oauth_request)
         
         # Dump the json response and return the list of copy_data
-        json = simplejson.loads(response)
-        return json['copy_data']
+        try:
+            json = simplejson.loads(response)
+            return json['copy_data']
+        except simplejson.JSONDecodeError:
+            return []
+            
